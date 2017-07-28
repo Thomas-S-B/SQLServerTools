@@ -60,7 +60,7 @@ SET @EndDate = GETDATE()
 --
 --###################################################################################################
 DECLARE @TEXT_SUCCESS VARCHAR(20)
-SET @TEXT_SUCCESS = 'Erfolgreich'
+SET @TEXT_SUCCESS = 'Successful'
 
  
 
