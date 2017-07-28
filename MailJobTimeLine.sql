@@ -126,7 +126,7 @@ CREATE TABLE ##TimelineGraph
 SELECT   JOBDATA.*
 INTO     #JobExecutionTimes
 FROM     (
---Jobs, which currently not running
+--Jobs, which are currently not running
           SELECT  job.name AS JobName
                  ,cat.name AS CatName
                  ,CONVERT(DATETIME, CONVERT(CHAR(8), his.run_date, 112) + ' '
@@ -665,7 +665,7 @@ GOTO Cleanup
 --###################################################################################################
 
 NothingToDo:
-PRINT 'Found no jobs (this could be also an failure)'
+PRINT 'Found no jobs (this could be also an error)'
 
  
 
