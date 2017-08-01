@@ -127,55 +127,55 @@ SELECT   JOBDATA.*
 INTO     #JobExecutionTimes
 FROM     (
 --Jobs, which are currently not running
-          SELECT  job.name AS JobName
-                 ,cat.name AS CatName
-                 ,CONVERT(DATETIME, CONVERT(CHAR(8), his.run_date, 112) + ' '
+          SELECT  JOB.name AS JobName
+                 ,CAT.name AS CatName
+                 ,CONVERT(DATETIME, CONVERT(CHAR(8), HIS.run_date, 112) + ' '
                   + STUFF(STUFF(RIGHT('000000'
-                                      + CONVERT(VARCHAR(8), his.run_time), 6),
+                                      + CONVERT(VARCHAR(8), HIS.run_time), 6),
                                 5, 0, ':'), 3, 0, ':'), 120) AS SDT
                  ,DATEADD(s,
-                          ((his.run_duration / 10000) % 100 * 3600)
-                          + ((his.run_duration / 100) % 100 * 60)
-                          + his.run_duration % 100,
-                          CONVERT(DATETIME, CONVERT(CHAR(8), his.run_date, 112)
+                          ((HIS.run_duration / 10000) % 100 * 3600)
+                          + ((HIS.run_duration / 100) % 100 * 60)
+                          + HIS.run_duration % 100,
+                          CONVERT(DATETIME, CONVERT(CHAR(8), HIS.run_date, 112)
                           + ' ' + STUFF(STUFF(RIGHT('000000'
-                                                    + CONVERT(VARCHAR(8), his.run_time),
+                                                    + CONVERT(VARCHAR(8), HIS.run_time),
                                                     6), 5, 0, ':'), 3, 0, ':'), 120)) AS EDT
-                 ,job.description
-                 ,his.run_status
-                 ,CASE WHEN his.run_status = 0 THEN @COLOR_ERROR       
-                       WHEN his.run_status = 1 THEN @COLOR_SUCCESS
-                       WHEN his.run_status = 2 THEN @COLOR_RETRY
-                       WHEN his.run_status = 3 THEN @COLOR_ABORTED
+                 ,JOB.description
+                 ,HIS.run_status
+                 ,CASE WHEN HIS.run_status = 0 THEN @COLOR_ERROR       
+                       WHEN HIS.run_status = 1 THEN @COLOR_SUCCESS
+                       WHEN HIS.run_status = 2 THEN @COLOR_RETRY
+                       WHEN HIS.run_status = 3 THEN @COLOR_ABORTED
                        ELSE @COLOR_UNDEFINED
                   END AS JobStatus
-                 ,CASE WHEN his.run_status = 0 THEN his.message   -- 0 = Error (red)
-                       WHEN his.run_status = 1 THEN @TEXT_SUCCESS -- 1 = Successful (green)
-                       WHEN his.run_status = 2 THEN his.message   -- 2 = New try (yellow)
-                       WHEN his.run_status = 3 THEN his.message   -- 3 = Aborted (gray)
-                       ELSE his.message                           -- undefined status (black)
-                  END AS JobMeldung
+                 ,CASE WHEN HIS.run_status = 0 THEN HIS.message   -- 0 = Error (red)
+                       WHEN HIS.run_status = 1 THEN @TEXT_SUCCESS -- 1 = Successful (green)
+                       WHEN HIS.run_status = 2 THEN HIS.message   -- 2 = New try (yellow)
+                       WHEN HIS.run_status = 3 THEN HIS.message   -- 3 = Aborted (gray)
+                       ELSE HIS.message                           -- undefined status (black)
+                  END AS JobMessage
 
-          FROM    msdb.dbo.sysjobs AS job
-          LEFT JOIN msdb.dbo.sysjobhistory AS his ON his.job_id = job.job_id
-          INNER JOIN msdb.dbo.syscategories AS cat ON job.category_id = cat.category_id
-          WHERE   CONVERT(DATETIME, CONVERT(CHAR(8), his.run_date, 112) + ' '
+          FROM    msdb.dbo.sysjobs AS JOB
+          LEFT JOIN msdb.dbo.sysjobhistory AS HIS ON HIS.job_id = job.job_id
+          INNER JOIN msdb.dbo.syscategories AS CAT ON CAT.category_id = JOB.category_id
+          WHERE   CONVERT(DATETIME, CONVERT(CHAR(8), HIS.run_date, 112) + ' '
                   + STUFF(STUFF(RIGHT('000000'
-                                      + CONVERT(VARCHAR(8), his.run_time), 6),
+                                      + CONVERT(VARCHAR(8), HIS.run_time), 6),
                                 5, 0, ':'), 3, 0, ':'), 120) BETWEEN @StartDate
                                                              AND
                                                               @EndDate
-                  AND his.step_id = 0 -- step_id = 0 is the job, step_id > 0 are the subjobs of this job
-                  AND ((his.run_duration / 10000) % 100 * 3600)
-                  + ((his.run_duration / 100) % 100 * 60) + his.run_duration
+                  AND HIS.step_id = 0 -- step_id = 0 is the job, step_id > 0 are the subjobs of this job
+                  AND ((HIS.run_duration / 10000) % 100 * 3600)
+                  + ((HIS.run_duration / 100) % 100 * 60) + HIS.run_duration
                   % 100 >= @MinimalJobDurationInSeconds 
 
           UNION ALL
 
           --Jobs currently running
           SELECT  JOB.name AS JobName
-                 ,cat.name AS CatName
-                 ,ja.start_execution_date AS SDT
+                 ,CAT.name AS CatName
+                 ,JA.start_execution_date AS SDT
                  ,GETDATE() AS EDT
                  ,JOB.description
                  ,HIS.run_status
@@ -192,22 +192,22 @@ FROM     (
                        WHEN HIS.run_status = 3 THEN HIS.message         -- 3 = Aborted (gray)
                        WHEN HIS.run_status IS NULL THEN 'Running currently'
                        ELSE HIS.message                                 -- undefined status (black)
-                  END AS JobMeldung
+                  END AS JobMessage
 
-          FROM    msdb.dbo.sysjobactivity ja
-          LEFT JOIN msdb.dbo.sysjobhistory AS HIS ON ja.job_history_id = HIS.instance_id
-          JOIN    msdb.dbo.sysjobs AS JOB ON ja.job_id = JOB.job_id
-          JOIN    msdb.dbo.sysjobsteps js ON ja.job_id = js.job_id
-                                             AND ISNULL(ja.last_executed_step_id,
-                                                        0) + 1 = js.step_id
-          LEFT JOIN msdb.dbo.syscategories AS cat ON JOB.category_id = cat.category_id
-          WHERE   ja.session_id = (SELECT TOP 1
+          FROM    msdb.dbo.sysjobactivity AS JA
+          LEFT JOIN msdb.dbo.sysjobhistory AS HIS ON HIS.instance_id = JA.job_history_id
+          JOIN    msdb.dbo.sysjobs AS JOB ON JOB.job_id = JA.job_id
+          JOIN    msdb.dbo.sysjobsteps AS JS ON JS.job_id = JA.job_id
+                                             AND ISNULL(JA.last_executed_step_id,
+                                                        0) + 1 = JS.step_id
+          LEFT JOIN msdb.dbo.syscategories AS CAT ON CAT.category_id = JOB.category_id
+          WHERE   JA.session_id = (SELECT TOP 1
                                           session_id
                                    FROM   msdb.dbo.syssessions
                                    ORDER BY agent_start_date DESC
                                   )
-                  AND ja.start_execution_date IS NOT NULL
-                  AND ja.stop_execution_date IS NULL
+                  AND JA.start_execution_date IS NOT NULL
+                  AND JA.stop_execution_date IS NULL
          ) AS JOBDATA
 
 ORDER BY JOBDATA.JobName
@@ -449,7 +449,7 @@ SELECT   '[''Addition1''],'
 INSERT   INTO ##TimelineGraph
          (HTML
          )
-SELECT   '[' + '''' + LEFT(REPLACE(COALESCE(JobMeldung, ''), '''', ''), 200) + '''],'
+SELECT   '[' + '''' + LEFT(REPLACE(COALESCE(JobMessage, ''), '''', ''), 200) + '''],'
 FROM     #JobExecutionTimes
 
 
