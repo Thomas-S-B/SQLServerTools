@@ -1,6 +1,6 @@
 
 --###################################################################################################
--- These SQL sends an email with all Jobs as an graphical timeline
+-- This SQL sends an email with all Jobs as an graphical timeline
 --
 -- You can configure this in the section "Configuration"
 --
