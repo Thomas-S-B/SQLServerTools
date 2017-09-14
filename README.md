@@ -15,3 +15,5 @@ This repo is the home of various SQL-Server-Tools for MS SQL-Server
 - [GetExecutionAndInvokecount.sql](../master/GetExecutionAndInvokecount.sql) - Get executionplans and count of invoke
 
 - [FREEPROCCACHE.sql](../master/FREEPROCCACHE.sql) - Delete executionplan of specific object, see also [GetExecutionAndInvokecount.sql](../master/GetExecutionAndInvokecount.sql) to get the planhandle
+
+- [GetConnections.sql](../master/GetConnections.sql) - Get current connections
