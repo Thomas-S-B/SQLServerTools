@@ -11,3 +11,5 @@ This repo is the home of various SQL-Server-Tools for MS SQL-Server
 - [GetErrorLog.sql](../master/GetErrorLog.sql) - Get/Read errorlog
 
 - [GetIndexFragmentation.sql](../master/GetIndexFragmentation.sql) - Get index fragmentaion
+
+- [GetExecutionAndInvokecount.sql](../master/GetExecutionAndInvokecount.sql) - Get executionplans and count of invoke
