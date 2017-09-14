@@ -13,6 +13,4 @@ This repo is the home of various SQL-Server-Tools for MS SQL-Server
 - [GetConnections.sql](../master/GetConnections.sql) - Get current connections
 - [FindTriggers.sql](../master/FindTriggers.sql) - Find triggers
 - [Top10WorstProcedures.sql](../master/Top10WorstProcedures.sql) - The TOP 10 of the worst procedures
-
-
-
+- [SelectFlatFiles.sql](../master/SelectFlatFiles.sql) - Run selects against flatfiles from a filesystem
