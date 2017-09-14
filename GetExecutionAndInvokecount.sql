@@ -10,4 +10,4 @@ FROM
     CROSS APPLY sys.dm_exec_sql_text(cp.plan_handle) AS st
 WHERE 
     cp.objtype = 'Proc'
-    AND OBJECT_NAME(st.objectid,st.dbid) LIKE '%Planerfassung%'
+    AND OBJECT_NAME(st.objectid,st.dbid) LIKE '%NAME_OF_MY_PROCEDUREg%'
