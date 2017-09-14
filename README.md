@@ -13,3 +13,5 @@ This repo is the home of various SQL-Server-Tools for MS SQL-Server
 - [GetIndexFragmentation.sql](../master/GetIndexFragmentation.sql) - Get index fragmentaion
 
 - [GetExecutionAndInvokecount.sql](../master/GetExecutionAndInvokecount.sql) - Get executionplans and count of invoke
+
+- [FREEPROCCACHE.sql](../master/FREEPROCCACHE.sql) - Delete executionplan of specific object, see also [GetExecutionAndInvokecount.sql](../master/GetExecutionAndInvokecount.sql) to get the planhandle
