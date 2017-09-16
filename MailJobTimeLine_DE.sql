@@ -14,8 +14,6 @@ DECLARE @DT DATETIME
 DECLARE @StartDatum DATETIME
 DECLARE @EndeDatum DATETIME
 DECLARE @MindestLaufzeitInSekunden INT
-DECLARE @SendeMail INT
-DECLARE @AusgabeDatensaetze INT
 DECLARE @EmailEmpfaenger VARCHAR(500)
 DECLARE @EmailNurBeiFehlerEmpfaenger VARCHAR(500)
 DECLARE @Tage INT
@@ -41,14 +39,6 @@ SET @Stunden = 0
 
 --Wie lange soll ein Auftrag mindestens gedauert haben, damit er angezeigt wird?
 SET @MindestLaufzeitInSekunden = 0
-
---Soll das generierte HTML als Datensätze ausgegeben werden?                               
-SET @AusgabeDatensaetze = 0   --0=Nein, 1=Ja
-
---Soll das generierte HTML als Email versendet werden?                                                            
-SET @SendeMail = 1   --0=Nein, 1=Ja
- 
-
 
 
 SET @StartDatum = DateAdd(hh, -(@Stunden), GETDATE() - @Tage)
@@ -398,459 +388,223 @@ SELECT   '[''Zusatz1''],'
  
 --Aufträge
 INSERT   INTO ##ZeitstrahlGraph
-
          (HTML
-
          )
-
 SELECT   '[' + '''' + LEFT(REPLACE(COALESCE(JobMeldung, ''), '''', ''), 200) + '''],'
-
 FROM     #AuftragsLaufzeiten
-
  
-
 --Serverneustart
-
 INSERT   INTO ##ZeitstrahlGraph
-
          (HTML
-
          )
-
 SELECT   '[' + '''' + '' + '''],'
-
 FROM sys.dm_exec_sessions
-
 WHERE session_id =1
-
 AND login_time >= @StartDatum
-
  
-
  
-
 INSERT   INTO ##ZeitstrahlGraph
-
          (HTML)
-
 SELECT   '              ]);'
-
  
-
  
-
 INSERT   INTO ##ZeitstrahlGraph
-
          (HTML
-
          )
-
 SELECT   '                                             google.visualization.events.addListener(chart, ''onmouseover'', function (e) {
-
                                                                setTooltipContent(dataTable, e.row);
-
                                                });
-
                                                function setTooltipContent(dataTable, row) {
-
                                                                if (row != null) {
-
                                                                               var content = ''<div class="custom-tooltip" ><h3>'' + dataTable.getValue(row, 0) + ''</h3>'' +
-
                                                                                               ''</div>'' +
-
                                                                                               ''<div>Von '' + formatDate(dataTable.getValue(row, 3)) + '' bis '' + formatDate(dataTable.getValue(row, 4)) + ''</div>'' +
-
                                                                                               ''<br/><div>Dauer: '' + (dateDiff(dataTable.getValue(row, 3), dataTable.getValue(row, 4))) + ''</div>'' +
-
                                                                                               ''<br/><div>'' + (dataTableZusaetzlicheDaten.getValue(row, 0)) + ''</div>''
-
                                                                                               ;
-
                                                                               var tooltip = document.getElementsByClassName("google-visualization-tooltip")[0];
-
                                                                               tooltip.innerHTML = content;
-
                                                                }
-
                                                }
-
                                                '
-
  
-
 INSERT   INTO ##ZeitstrahlGraph
-
          (HTML
-
          )
-
 SELECT   '
-
                                                function formatDate(d) {
-
                                                                return ("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear() + " " + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2) + ":" + ("0" + d.getSeconds()).slice(-2);
-
                                                }
-
                                                function dateDiff(dateNow, dateFuture) {
-
                                                                var seconds = Math.floor((dateFuture - (dateNow)) / 1000);
-
                                                                var minutes = Math.floor(seconds / 60);
-
                                                                var hours = Math.floor(minutes / 60);
-
                                                                var days = Math.floor(hours / 24);
-
                                                                hours = hours - (days * 24);
-
                                                                minutes = minutes - (days * 24 * 60) - (hours * 60);
-
                                                                seconds = seconds - (days * 24 * 60 * 60) - (hours * 60 * 60) - (minutes * 60);
-
                                                                return ("0" + days).slice(-2) + '':'' +("0" + hours).slice(-2) + '':'' + ("0" + minutes).slice(-2) + '':'' + ("0" + seconds).slice(-2)
-
                                                }
-
                                                '
-
  
-
  
-
 --###################################################################################################
-
 -- Html Zeitstrahl - Fussende
-
 --###################################################################################################
-
 INSERT   INTO ##ZeitstrahlGraph
-
          (HTML
-
          )
-
 SELECT   '}
-
                 </script>
-
                 </head>
-
                 <body>' + '<font face="Helvetica" size="3" ><b>' + @@servername
-
          + ' Auftr&auml;ge' + ' von ' + CONVERT(VARCHAR(20), @StartDatum, 120)
-
          + ' bis ' + CONVERT(VARCHAR(20), @EndeDatum, 120) +
-
          + CASE WHEN @FEHLERANZAHL = 0 THEN ''
-
             ELSE
-
                 '. ' + @FEHLERVORHANDEN_TEXT
-
            END
-
          + CASE WHEN @MindestLaufzeitInSekunden = 0 THEN ''
-
                 ELSE ' (Auftr&auml;ge länger '
-
                      + CAST(@MindestLaufzeitInSekunden AS VARCHAR(10))
-
                      + ' Sekunden)'
-
            END
-
          + '</b></font>
-
                                <p/>
-
 '
-
  
-
 INSERT   INTO ##ZeitstrahlGraph
-
          (HTML
-
          )
-
 SELECT   '
-
                 <div id="legende">
-
                                <ul>
-
                                Legende:
-
                                                <li>
-
                                                                <div class="legendeErfolg"></div>= Erfolgreich
-
                                                </li>
-
                                                <li>
-
                                                                <div class="legendeLaeuft"></div>= L&auml;uft aktuell
-
                                                </li>
-
                                                <li>
-
                                                                <div class="legendeFehler"></div>= Fehlerhaft
-
                                                </li>
-
                                                <li>
-
                                                                <div class="legendeNeuversuch"></div>= Neuversuch
-
                                                </li>
-
                                                <li>
-
                                                                <div class="legendeAbgebrochen"></div>= Abgebrochen
-
                                                </li>
-
                                                <li>
-
                                                                <div class="legendeServerneustart"></div>= Letzter Serverneustart
-
                                                '
-
                                               
-
 INSERT   INTO ##ZeitstrahlGraph
-
          (HTML
-
          )
-
 SELECT   '              ('
-
                                                    + CONVERT(char(20), @ServerNeustart,113)
-
                           + ')
-
                                                   '
-
                                               
-
 INSERT   INTO ##ZeitstrahlGraph
-
          (HTML
-
          )
-
 SELECT        
-
                                                '</li>
-
                                                <li>
-
                                                                <div class="legendeUndefiniert"></div>= Undefiniert
-
                                                </li>
-
                                </ul>
-
                 </div>
-
 '
-
  
-
  
-
 --###################################################################################################
-
 -- Zeitstrahl/Ende abschnitt
-
 --###################################################################################################
-
 DECLARE @Zeitstrahlbreite AS INTEGER
-
 IF @Tage < 1
-
    SET @Zeitstrahlbreite = 1800
-
 ELSE
-
    SET @Zeitstrahlbreite = @Tage * 1800
-
   
-
 INSERT   INTO ##ZeitstrahlGraph
-
          (HTML
-
          )
-
 SELECT   '
-
                                <div id="Zeitstrahl" style="width: ' + CAST(@Zeitstrahlbreite AS VARCHAR(10))
-
          + 'px; height: 950px;"></div>
-
                 </body>
-
 </html>'
-
  
-
  
-
 --###################################################################################################
-
--- Ausgabe als Datensätze, diese können kopiert werden und in eine html-Datei kopiert werden
-
---###################################################################################################
-
-IF @AusgabeDatensaetze = 1
-
-   SELECT   HTML
-
-   FROM     ##ZeitstrahlGraph
-
-   ORDER BY ID
-
- 
-
---###################################################################################################
-
 -- Ausgabe als Email
-
 --###################################################################################################
-
 DECLARE @emailBodyText NVARCHAR(MAX); 
-
 SET @emailBodyText = 'Zeitstrahl der Aufträge von '
-
    + CONVERT(VARCHAR(20), @StartDatum, 120) + ' bis '
-
    + CONVERT(VARCHAR(20), @EndeDatum, 120) + ' siehe Anhang.'
-
 DECLARE @emailSubjectText NVARCHAR(MAX); 
-
 SET @emailSubjectText = @@servername + ' Aufträge von '
-
    + CONVERT(VARCHAR(20), @StartDatum, 120) + ' bis '
-
    + CONVERT(VARCHAR(20), @EndeDatum, 120)
-
    + ' ' + @FEHLERVORHANDEN_TEXT
-
 DECLARE @emailHTMLDateinameText NVARCHAR(MAX); 
-
 SET @emailHTMLDateinameText = @@servername + ' Aufträge von '
-
    + CONVERT(VARCHAR(20), @StartDatum, 120) + ' bis '
-
    + CONVERT(VARCHAR(20), @EndeDatum, 120) + '.html'
-
 SET @emailHTMLDateinameText = REPLACE(@emailHTMLDateinameText, ':', '_')
-
  
-
 DECLARE @emailWichtigkeit NVARCHAR(10); 
-
 IF @FEHLERANZAHL > 0
-
    SET @emailWichtigkeit = 'High'
-
 ELSE
-
    SET @emailWichtigkeit = 'Normal'
-
  
-
-IF @SendeMail = 1 AND @EmailEmpfaenger <> ''
-
+IF @EmailEmpfaenger <> ''
    EXECUTE msdb.dbo.sp_send_dbmail @recipients = @EmailEmpfaenger,
-
       @subject = @emailSubjectText, @body = @emailBodyText,
-
       @body_format = 'HTML' -- oder TEXT
-
       , @importance = @emailWichtigkeit
-
       , @sensitivity = 'Normal' --Normal Personal Private Confidential
-
       , @execute_query_database = 'master', @query_result_header = 0,       --@query_result_header = 0 ist wichtig, da sonst "HTML----" aus der Query in den html-Code gelangt
-
       @query = 'set nocount on; SELECT HTML FROM ##ZeitstrahlGraph ORDER BY ID',
-
       @query_result_no_padding = 1
-
       --,@query_no_truncate= 1
-
       , @attach_query_result_as_file = 1,
-
       @query_attachment_filename = @emailHTMLDateinameText
-
  
-
-IF @SendeMail = 1 AND @FEHLERANZAHL > 0 AND @EmailNurBeiFehlerEmpfaenger <> ''
-
+IF @FEHLERANZAHL > 0 AND @EmailNurBeiFehlerEmpfaenger <> ''
    EXECUTE msdb.dbo.sp_send_dbmail @recipients = @EmailNurBeiFehlerEmpfaenger,
-
       @subject = @emailSubjectText, @body = @emailBodyText,
-
       @body_format = 'HTML' -- oder TEXT
-
       , @importance = @emailWichtigkeit
-
       , @sensitivity = 'Normal' --Normal Personal Private Confidential
-
       , @execute_query_database = 'master', @query_result_header = 0,       --@query_result_header = 0 ist wichtig, da sonst "HTML----" aus der Query in den html-Code gelangt
-
       @query = 'set nocount on; SELECT HTML FROM ##ZeitstrahlGraph ORDER BY ID',
-
       @query_result_no_padding = 1
-
       --,@query_no_truncate= 1
-
       , @attach_query_result_as_file = 1,
-
       @query_attachment_filename = @emailHTMLDateinameText
-
  
-
  
-
 GOTO Aufraeumen
-
  
-
 --###################################################################################################
-
 -- Nur für alle Fälle
-
 --###################################################################################################
-
 NichtsZuTun:
-
  
-
 PRINT 'Keine Aufträge gefunden (Kann auch ein Fehler sein)'
-
  
-
 --###################################################################################################
-
 -- Aufräumen
-
 --###################################################################################################
-
 Aufraeumen:
-
 IF OBJECT_ID('tempdb..#AuftragsLaufzeiten') IS NOT NULL
-
    DROP TABLE #AuftragsLaufzeiten;
-
 IF OBJECT_ID('tempdb..##ZeitstrahlGraph') IS NOT NULL
-
    DROP TABLE ##ZeitstrahlGraph;
 
- 
