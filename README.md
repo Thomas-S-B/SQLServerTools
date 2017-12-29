@@ -18,3 +18,4 @@ This repo is the home of various SQL-Server-Tools for MS SQL-Server
 - [ChangeOptionsInDatabases.sql](../master/ChangeOptionsInDatabases.sql) - Executes an SQL on all or selected Databases
 - [CleanupHistories.sql](../master/CleanupHistories.sql) - Cleans up histories
 - [OpenTransactions.sql](../master/OpenTransactions.sql) - Shows all current transactions
+- [ShowFragmentation.sql](../master/ShowFragmentation.sql) - Shows fragmentation, customize where-clause
