@@ -17,3 +17,4 @@ This repo is the home of various SQL-Server-Tools for MS SQL-Server
 - [SelectFlatFiles.sql](../master/SelectFlatFiles.sql) - Run selects against flatfiles from a filesystem
 - [ChangeOptionsInDatabases.sql](../master/ChangeOptionsInDatabases.sql) - Executes an SQL on all or selected Databases
 - [CleanupHistories.sql](../master/CleanupHistories.sql) - Cleans up histories
+- [OpenTransactions.sql](../master/OpenTransactions.sql) - Shows all current transactions
