@@ -19,3 +19,4 @@ This repo is the home of various SQL-Server-Tools for MS SQL-Server
 - [CleanupHistories.sql](../master/CleanupHistories.sql) - Cleans up histories
 - [OpenTransactions.sql](../master/OpenTransactions.sql) - Shows all current transactions
 - [ShowFragmentation.sql](../master/ShowFragmentation.sql) - Shows fragmentation, customize where-clause
+- [GetSynonyms.sql](../master/GetSynonyms.sql) - Get all synonyms of all databases
