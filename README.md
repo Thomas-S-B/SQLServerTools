@@ -22,3 +22,5 @@ This repo is the home of various SQL-Server-Tools for MS SQL-Server
 - [GetSynonyms.sql](../master/GetSynonyms.sql) - Get all synonyms of all databases
 - [DeleteExecutionPlan.sql](../master/DeleteExecutionPlan.sql) - Delete specific executionplans
 - [GetStatisticSamples.sql](../master/GetStatisticSamples.sql) - Get all statistics with a sample size < 100%
+- [HallengrenHeaviestMail.sql](../master/HallengrenHeaviestMail.sql) - Sends an mail with the heaviest statisticsupdates of an hallengren maintenance
+ 	
