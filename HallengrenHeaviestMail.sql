@@ -75,7 +75,7 @@ FOR XML PATH('tr'), TYPE
 N'</table>'
 
 
-EXEC msdb.dbo.sp_send_dbmail @recipients='john.doe@aol.com; sue.moe@compuserve.com',
+EXEC msdb.dbo.sp_send_dbmail @recipients='john.doe@aol.com;sue.moe@compuserve.com',
 @subject = @subject,
 @body = @tableHTML,
 @body_format = 'HTML' ;
