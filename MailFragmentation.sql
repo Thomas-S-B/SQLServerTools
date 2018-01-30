@@ -54,7 +54,7 @@ N'<tr>
 </tr>' +
 CAST ( (
 
-SELECT  td = CAST(dbschemas.name + '.' + dbtables.name + '  ' + dbindexes.name AS VARCHAR(100)),'',
+SELECT  td = CAST(dbschemas.name + '.' + dbtables.name + '  ' + ISNULL(dbindexes.name, 'HEAP') AS VARCHAR(100)),,
         td = CAST(indexstats.avg_fragmentation_in_percent AS VARCHAR(100)),'',
         td = CAST(indexstats.avg_fragment_size_in_pages AS VARCHAR(100)),'',
         td = indexstats.page_count,'',
