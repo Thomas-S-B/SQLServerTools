@@ -1,5 +1,5 @@
 --###################################################################################################
--- This send an email with the heaviest haelngren updates, which takes 20 or more seconds
+-- This send an email with the heaviest halengren updates, which takes 20 or more seconds
 --
 -- See configuration-part
 --###################################################################################################
