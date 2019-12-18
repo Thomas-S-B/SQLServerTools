@@ -1,6 +1,6 @@
 --###################################################################################################
 --
--- This send an email with the heaviest halengren updates, which takes 20 or more seconds
+-- This sends an email with the heaviest halengren updates, which takes 20 or more seconds
 -- See "config here" comments
 --
 --###################################################################################################
