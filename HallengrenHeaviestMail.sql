@@ -1,7 +1,7 @@
 --###################################################################################################
+--
 -- This send an email with the heaviest halengren updates, which takes 20 or more seconds
 --
--- See configuration-part
 --###################################################################################################
 
 DECLARE @bodyMsg nvarchar(max)
@@ -69,16 +69,17 @@ SELECT td = CAST(SchemaName AS VARCHAR(100)),'',
              td = CONVERT(VARCHAR(30),DATEDIFF(ss,starttime, endtime),120) ,'',
              td = COALESCE(command, CONVERT(VARCHAR(30),command,120), '') ,''
        FROM [master].[dbo].[CommandLog]
-             --WHERE DATEDIFF(Mi,starttime, endtime) >= 1
-             WHERE DATEDIFF(ss,starttime, endtime) >= 20
-             AND StartTime > DATEADD(dd, DATEDIFF(dd, 0, getdate()), 0)  --Nur vom aktuellen Datum (ohne Zeit)
+             --WHERE DATEDIFF(Mi,starttime, endtime) >= 1 --Config here
+             WHERE DATEDIFF(ss,starttime, endtime) >= 20 --Config here
+             AND StartTime > DATEADD(dd, DATEDIFF(dd, 0, getdate()), 0)  --Only from the actual day (without time)
                                 --AND StatisticsName IS NOT NULL
              ORDER BY DATEDIFF(ss,starttime, endtime) DESC
 FOR XML PATH('tr'), TYPE
 ) AS NVARCHAR(MAX) ) +
 N'</table>'
 
-EXEC msdb.dbo.sp_send_dbmail @recipients='joe.doq@compuserve.com',
+--Config here
+EXEC msdb.dbo.sp_send_dbmail @recipients='joe.doq@compuserve.com', 
 @subject = @subject,
 @body = @tableHTML,
 @body_format = 'HTML' ;
