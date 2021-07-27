@@ -25,3 +25,4 @@ This repo is the home of various SQL-Server-Tools for MS SQL-Server
 - [HallengrenHeaviestMail.sql](../master/HallengrenHeaviestMail.sql) - Sends an mail with the heaviest statisticsupdates of an hallengren maintenance
 - [MailFragmentation.sql](../master/MailFragmentation.sql) - Sends an mail with all indexes > 100 pages and >= 5% fragmentation
 - [GetOldStatistics.sql](../master/GetOldStatistics.sql) - Get old statistics
+- [TriggerDependencies.sql](../master/TriggerDependencies.sql) - Find dependencies to other tables in triggers
