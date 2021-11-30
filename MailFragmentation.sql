@@ -1,13 +1,30 @@
 --###################################################################################################
--- Sending an mail with all indexes > 100 pages and >=5% fragmentation
+-- Sending an mail with all indexes > THRESHOLD_PAGES pages and >= THRESHOLD_FRAGMENTATION % fragmentation
 --
 --###################################################################################################
 
 DECLARE @bodyMsg nvarchar(max)
 DECLARE @subject nvarchar(max)
 DECLARE @tableHTML nvarchar(max)
+DECLARE @THRESHOLD_PAGES INT
+DECLARE @THRESHOLD_FRAGMENTATION INT
 
-SET @subject = db_name() + ' indexes > 100 pages and >=5% fragmentation'
+--###################################################################################################
+--
+-- Configuration Start
+--
+--###################################################################################################
+SET @THRESHOLD_PAGES = 100
+ 
+SET @THRESHOLD_FRAGMENTATION = 5
+--###################################################################################################
+--
+-- Configuration End
+--
+--###################################################################################################
+
+
+SET @subject = db_name() + ' indexes > ' + @THRESHOLD_PAGES + ' pages and >= ' + @THRESHOLD_FRAGMENTATION + '% fragmentation'
 
 SET @tableHTML =
 N'<style type="text/css">
@@ -42,7 +59,7 @@ tr:nth-child(even) td { background: #F1F1F1; }
 tr:nth-child(odd) td { background: #FEFEFE; } 
 tr td:hover { background: #888; color: #FFF; } 
 </style>'+
-N'<H3>' + db_name() + ' indexes > 100 pages and >=5% fragmentation' +
+N'<H3>' + db_name() + ' indexes > ' + @THRESHOLD_PAGES + ' pages and >= ' + @THRESHOLD_FRAGMENTATION + '% fragmentation' +
 N' (time ' + CONVERT(char(19), GetDate(),121) + '):</H3>' +
 N'<table id="box-table" >' +
 N'<tr>
@@ -66,7 +83,7 @@ INNER JOIN sys.schemas dbschemas ON dbtables.schema_id = dbschemas.schema_id
 INNER JOIN sys.indexes AS dbindexes ON dbindexes.object_id = indexstats.object_id
                                        AND indexstats.index_id = dbindexes.index_id
 WHERE    indexstats.database_id = DB_ID()
-AND indexstats.page_count > 100 AND indexstats.avg_fragmentation_in_percent >= 5
+AND indexstats.page_count > @THRESHOLD_PAGES AND indexstats.avg_fragmentation_in_percent >= @THRESHOLD_FRAGMENTATION
 ORDER BY  indexstats.avg_fragmentation_in_percent DESC
 
 FOR XML PATH('tr'), TYPE
