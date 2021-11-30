@@ -8,6 +8,7 @@ DECLARE @subject nvarchar(max)
 DECLARE @tableHTML nvarchar(max)
 DECLARE @THRESHOLD_PAGES INT
 DECLARE @THRESHOLD_FRAGMENTATION INT
+DECLARE @EmailTo VARCHAR(500)
 
 --###################################################################################################
 --
@@ -17,6 +18,8 @@ DECLARE @THRESHOLD_FRAGMENTATION INT
 SET @THRESHOLD_PAGES = 100
  
 SET @THRESHOLD_FRAGMENTATION = 5
+
+SET @EmailTo = 'John.Doe@xyz.com;Jennifer.Doe@xyz.com'
 --###################################################################################################
 --
 -- Configuration End
@@ -91,7 +94,7 @@ FOR XML PATH('tr'), TYPE
 N'</table>'
  
 
-EXEC msdb.dbo.sp_send_dbmail @recipients='John.Doe@aol.com',
+EXEC msdb.dbo.sp_send_dbmail @recipients = @EmailTo,
 @subject = @subject,
 @body = @tableHTML,
 @body_format = 'HTML' ;
