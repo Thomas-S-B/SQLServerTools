@@ -27,7 +27,7 @@ SET @EmailTo = 'John.Doe@xyz.com;Jennifer.Doe@xyz.com'
 --###################################################################################################
 
 
-SET @subject = db_name() + ' indexes > ' + @THRESHOLD_PAGES + ' pages and >= ' + @THRESHOLD_FRAGMENTATION + '% fragmentation'
+SET @subject = db_name() + ' indexes > ' + CAST(@THRESHOLD_PAGES AS varchar(10)) + ' pages and >= ' + CAST(@THRESHOLD_FRAGMENTATION  AS varchar(3)) + '% fragmentation'
 
 SET @tableHTML =
 N'<style type="text/css">
@@ -37,32 +37,27 @@ font-family: Helvetica !important;
 font-size: 18px !important;
 text-align: left;
 }
-
 table { 
     color: #333;
     font-family: Helvetica, Arial, sans-serif;
     border-collapse:
     collapse; border-spacing: 0;
 }
-
 td, th { border: 1px solid #CCC; height: 25px; padding: 5px;}
-
 th { 
     background: #F3F3F3;
     font-weight: bold;
 }
-
 td { 
     background: #FAFAFA;
     text-align: center;
     padding: 2px;
 }
-
 tr:nth-child(even) td { background: #F1F1F1; }  
 tr:nth-child(odd) td { background: #FEFEFE; } 
 tr td:hover { background: #888; color: #FFF; } 
 </style>'+
-N'<H3>' + db_name() + ' indexes > ' + @THRESHOLD_PAGES + ' pages and >= ' + @THRESHOLD_FRAGMENTATION + '% fragmentation' +
+N'<H3>' + db_name() + ' indexes > ' + CAST(@THRESHOLD_PAGES AS varchar(10)) + ' pages and >= ' + CAST(@THRESHOLD_FRAGMENTATION  AS varchar(3)) + '% fragmentation' +
 N' (time ' + CONVERT(char(19), GetDate(),121) + '):</H3>' +
 N'<table id="box-table" >' +
 N'<tr>
