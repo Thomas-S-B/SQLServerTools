@@ -205,7 +205,7 @@ ELSE
  
 --###################################################################################################
 -- Html Zeitstrahl - Kopf
--- Wird in mehrere Inserts aufgeteilt, da per Standrd Text maxmial 256 Zeichen
+-- Wird in mehrere Inserts aufgeteilt, da per Standard Text maxmial 256 Zeichen
 --###################################################################################################
 INSERT   INTO ##ZeitstrahlGraph
          (HTML
