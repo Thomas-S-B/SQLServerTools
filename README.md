@@ -26,3 +26,4 @@ This repo is the home of various SQL-Server-Tools for MS SQL-Server
 - [MailFragmentation.sql](../master/MailFragmentation.sql) - Sends an mail with all indexes > 100 pages and >= 5% fragmentation
 - [GetOldStatistics.sql](../master/GetOldStatistics.sql) - Get old statistics
 - [TriggerDependencies.sql](../master/TriggerDependencies.sql) - Find dependencies to other tables in triggers
+- [AnalyzeTraceFileFromSQLProfiler.sql](../master/AnalyzeTraceFileFromSQLProfiler.sql) - Query and analyze a tracefile from SQL Profiler
